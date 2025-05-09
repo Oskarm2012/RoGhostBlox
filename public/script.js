@@ -7,7 +7,7 @@ let ghostSpeed = 1000
 let isGameRunning = false;
 let ghostInterval;
 let score = 0;
-
+let ghostAmount = 1
 document.getElementById('new-game-btn').addEventListener('click', startGame)
 
 document.addEventListener('keydown',(event)=>{
@@ -63,6 +63,7 @@ function startGame(){
     setTimeout(()=>{
         ghostInterval = setInterval(moveGhosts, ghostSpeed)  
     },1000)
+    score = 0;
     updateScoreBoard(0)
     isGameRunning = true;
 }
@@ -88,7 +89,7 @@ function generateRandomBoard(){
 
     // kummitusten luonti
     ghosts = []
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < ghostAmount; i++){
         const[ghostX,ghostY] = randomEmptyPosition(newBoard);
         setCell(newBoard,ghostX,ghostY,'G');
         ghosts.push(new Ghost(ghostX, ghostY));
@@ -202,7 +203,7 @@ function shootAt(x,y){
     drawBoard(board)
 
         if(ghosts.length === 0){
-            alert('Kaikki RoGhostit on tapettu')
+            startNextLevel()
         }
 
 
@@ -247,6 +248,19 @@ function updateScoreBoard(points){
     const scoreBoard = document.getElementById('score-board');
     score += points;
     scoreBoard.textContent = `Pisteet: ${score}`
+}
+
+function startNextLevel(){
+    alert('Roghostbloxsien lapset suuttuvat, he tulevat ja ovat nopeampia kuin heidän vanhemmat. (heillä on lapsia myös)')
+    ghostAmount ++;
+    board = generateRandomBoard();
+    ghostSpeed *= 0.9;
+    clearInterval(ghostInterval);
+    setTimeout(()=>{
+        ghostInterval = setInterval(moveGhosts,ghostSpeed);
+    },1000);
+  
+
 }
 
 class Player{
